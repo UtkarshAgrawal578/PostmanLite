@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Postman Lite</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/sidebar.css" />
+  <link rel="stylesheet" href="css/request-builder.css" />
+  <link rel="stylesheet" href="css/response-viewer.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ===== Sidebar ===== -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <span class="brand-mark">&gt;_</span>
+          <span class="brand-name">Postman<span class="brand-accent">Lite</span></span>
+        </div>
+        <button id="new-request-btn" class="icon-btn" title="New request">+</button>
+      </div>
+
+      <div class="env-block">
+        <label class="field-label">Environment</label>
+        <select id="env-select" class="env-select">
+          <option value="">No Environment</option>
+        </select>
+        <button id="edit-env-btn" class="text-btn">Manage vars</button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <span>Collections</span>
+          <button id="new-collection-btn" class="icon-btn small" title="New collection">+</button>
+        </div>
+        <div id="collections-tree" class="collections-tree">
+          <!-- collections rendered here by js/components/sidebar.js -->
+          <p class="empty-hint">No collections yet. Create one to organize requests.</p>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <span>History</span>
+        </div>
+        <div id="history-list" class="history-list">
+          <p class="empty-hint">Requests you send will show up here.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Workspace ===== -->
+    <main id="workspace">
+
+      <div id="tabs-bar" class="tabs-bar">
+        <div class="tab active" data-tab-id="default">
+          <span class="tab-method get">GET</span>
+          <span class="tab-name">Untitled Request</span>
+          <span class="tab-close">&times;</span>
+        </div>
+        <button id="add-tab-btn" class="tab-add" title="New tab">+</button>
+      </div>
+
+      <!-- ===== Request Builder ===== -->
+      <section id="request-builder" class="request-builder">
+
+        <div class="url-row">
+          <select id="method-select" class="method-select get">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="PATCH">PATCH</option>
+            <option value="DELETE">DELETE</option>
+            <option value="QUERY">QUERY</option>
+          </select>
+          <input
+            id="url-input"
+            class="url-input"
+            type="text"
+            placeholder="https://api.example.com/endpoint  or  {{BASE_URL}}/users"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="send-btn" class="send-btn">Send</button>
+          <button id="save-btn" class="save-btn" title="Save request">Save</button>
+        </div>
+
+        <div class="builder-tabs">
+          <button class="builder-tab active" data-panel="params">Params <span id="params-count" class="count-badge"></span></button>
+          <button class="builder-tab" data-panel="headers">Headers <span id="headers-count" class="count-badge"></span></button>
+          <button class="builder-tab" data-panel="body">Body</button>
+          <button class="builder-tab" data-panel="auth">Auth</button>
+        </div>
+
+        <div class="builder-panels">
+
+          <!-- Params panel -->
+          <div id="panel-params" class="builder-panel active">
+            <table class="kv-table" id="params-table">
+              <thead>
+                <tr>
+                  <th class="col-check"></th>
+                  <th>Key</th>
+                  <th>Value</th>
+                  <th class="col-action"></th>
+                </tr>
+              </thead>
+              <tbody id="params-body">
+                <!-- rows injected by js/components/paramsEditor.js -->
+              </tbody>
+            </table>
+            <button class="add-row-btn" id="add-param-row">+ Add parameter</button>
+          </div>
+
+          <!-- Headers panel -->
+          <div id="panel-headers" class="builder-panel">
+            <table class="kv-table" id="headers-table">
+              <thead>
+                <tr>
+                  <th class="col-check"></th>
+                  <th>Key</th>
+                  <th>Value</th>
+                  <th class="col-action"></th>
+                </tr>
+              </thead>
+              <tbody id="headers-body">
+                <!-- rows injected by js/components/headersEditor.js -->
+              </tbody>
+            </table>
+            <button class="add-row-btn" id="add-header-row">+ Add header</button>
+          </div>
+
+          <!-- Body panel -->
+          <div id="panel-body" class="builder-panel">
+            <div class="body-mode-row">
+              <label class="radio-pill">
+                <input type="radio" name="body-mode" value="none" checked />
+                <span>None</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="body-mode" value="json" />
+                <span>JSON</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="body-mode" value="raw" />
+                <span>Raw</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="body-mode" value="form" />
+                <span>Form Data</span>
+              </label>
+            </div>
+
+            <textarea
+              id="body-json"
+              class="body-textarea code-font"
+              placeholder='{
+  "name": "John",
+  "email": "john@example.com"
+}'
+              spellcheck="false"
+              style="display:none;"
+            ></textarea>
+
+            <textarea
+              id="body-raw"
+              class="body-textarea code-font"
+              placeholder="Hello API"
+              spellcheck="false"
+              style="display:none;"
+            ></textarea>
+
+            <table class="kv-table" id="form-data-table" style="display:none;">
+              <thead>
+                <tr>
+                  <th class="col-check"></th>
+                  <th>Key</th>
+                  <th>Value</th>
+                  <th class="col-action"></th>
+                </tr>
+              </thead>
+              <tbody id="form-data-body"></tbody>
+            </table>
+            <button class="add-row-btn" id="add-form-row" style="display:none;">+ Add field</button>
+
+            <p id="body-none-hint" class="empty-hint">This request has no body.</p>
+          </div>
+
+          <!-- Auth panel -->
+          <div id="panel-auth" class="builder-panel">
+            <label class="field-label">Auth Type</label>
+            <select id="auth-type-select" class="auth-type-select">
+              <option value="none">No Auth</option>
+              <option value="bearer">Bearer Token</option>
+              <option value="basic">Basic Auth</option>
+              <option value="apikey">API Key</option>
+            </select>
+
+            <div id="auth-fields" class="auth-fields">
+              <p class="empty-hint">No authentication will be sent with this request.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== Response Viewer ===== -->
+      <section id="response-viewer" class="response-viewer">
+        <div class="response-empty" id="response-empty">
+          <span class="response-empty-mark">&gt;_</span>
+          <p>Send a request to see the response here.</p>
+        </div>
+
+        <div class="response-content" id="response-content" style="display:none;">
+          <div class="response-meta-bar">
+            <span id="response-status" class="status-pill">200 OK</span>
+            <span class="meta-item">Time <strong id="response-time">—</strong></span>
+            <span class="meta-item">Size <strong id="response-size">—</strong></span>
+          </div>
+
+          <div class="response-tabs">
+            <button class="response-tab active" data-panel="resp-body">Body</button>
+            <button class="response-tab" data-panel="resp-headers">Headers <span id="resp-headers-count" class="count-badge"></span></button>
+          </div>
+
+          <div id="resp-panel-body" class="response-panel active">
+            <pre id="response-body-content" class="response-body code-font"></pre>
+          </div>
+
+          <div id="resp-panel-headers" class="response-panel">
+            <table class="kv-table readonly" id="response-headers-table">
+              <tbody id="response-headers-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== Environment Modal ===== -->
+  <div id="env-modal" class="modal-overlay" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Manage Environments</h3>
+        <button class="icon-btn" id="close-env-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="env-modal-row">
+          <input id="new-env-name" type="text" placeholder="Environment name (e.g. Local, Staging)" class="text-input" />
+          <button id="create-env-btn" class="secondary-btn">Create</button>
+        </div>
+        <table class="kv-table" id="env-vars-table">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Value</th>
+              <th class="col-action"></th>
+            </tr>
+          </thead>
+          <tbody id="env-vars-body"></tbody>
+        </table>
+        <button class="add-row-btn" id="add-env-var-row">+ Add variable</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+/* =========================================================
+   Tabs bar (open requests, like browser tabs)
+   ========================================================= */
+.tabs-bar {
+  display: flex;
+  align-items: center;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 0 8px;
+  height: 42px;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 32px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.tab.active {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+  border-bottom-color: var(--bg);
+}
+.tab-method {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 10.5px;
+}
+.tab-close {
+  color: var(--text-faint);
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px;
+  border-radius: 4px;
+}
+.tab-close:hover {
+  color: var(--err);
+  background: rgba(242, 84, 91, 0.1);
+}
+
+.tab-add {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-faint);
+  font-size: 16px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+.tab-add:hover {
+  background: var(--panel-3);
+  color: var(--text);
+}
+
+/* =========================================================
+   Request builder panel
+   ========================================================= */
+.request-builder {
+  background: var(--bg);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* ---- method + url row ---- */
+.url-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.method-select {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 0 10px;
+  width: 120px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  appearance: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+.url-input {
+  flex: 1;
+  padding: 0 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--panel-2);
+}
+
+.send-btn {
+  padding: 0 22px;
+  background: var(--accent);
+  color: #0b0d12;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  transition: background 0.12s ease, transform 0.06s ease;
+}
+.send-btn:hover {
+  background: var(--accent-strong);
+}
+.send-btn:active {
+  transform: scale(0.98);
+}
+.send-btn.loading {
+  background: var(--panel-3);
+  color: var(--text-muted);
+  cursor: wait;
+}
+
+.save-btn {
+  padding: 0 16px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+}
+.save-btn:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+}
+
+/* ---- sub tabs: params / headers / body / auth ---- */
+.builder-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: 12px;
+}
+
+.builder-tab {
+  padding: 8px 4px;
+  margin-right: 18px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.builder-tab:hover {
+  color: var(--text);
+}
+.builder-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.builder-panel {
+  display: none;
+}
+.builder-panel.active {
+  display: block;
+}
+
+/* ---- body mode selector ---- */
+.body-mode-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.radio-pill {
+  position: relative;
+}
+.radio-pill input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.radio-pill span {
+  display: inline-block;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.radio-pill input:checked + span {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.body-textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 12px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  resize: vertical;
+  background: var(--panel-2);
+}
+
+/* ---- auth panel ---- */
+.auth-type-select {
+  width: 220px;
+  padding: 7px 10px;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.auth-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 420px;
+}
+
+.auth-fields .text-input {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.auth-field-label {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+  display: block;
+}
