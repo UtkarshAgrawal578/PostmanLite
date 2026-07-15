@@ -1,6 +1,3 @@
-// =========================================================
-// main.js — entry point, wires up the whole UI
-// =========================================================
 import { resolveVariables, resolveVariablesDeep } from "./lib/resolveVariables.js";
 import { highlightJson } from "./lib/jsonHighlight.js";
 import "./components/envSelector.js";
