@@ -39,6 +39,25 @@
   color: var(--accent);
 }
 
+.user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--panel-2);
+}
+
+.user-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
 /* ---- environment block ---- */
 .env-block {
   padding: 14px 16px;

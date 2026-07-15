@@ -1,5 +1,9 @@
+// =========================================================
+// main.js — entry point, wires up the whole UI
+// =========================================================
 import { resolveVariables, resolveVariablesDeep } from "./lib/resolveVariables.js";
 import { highlightJson } from "./lib/jsonHighlight.js";
+import { requireSession, clearSession } from "./state/session.js";
 import "./components/envSelector.js";
 import {
   setOnLoadRequest,
@@ -7,8 +11,13 @@ import {
   pushHistoryEntry,
 } from "./components/sidebar.js";
 
+const session = requireSession();
+
 const RELAY_URL = "http://localhost:5000/api/relay";
 
+// ---------------------------------------------------------
+// Element references
+// ---------------------------------------------------------
 const methodSelect = document.getElementById("method-select");
 const urlInput = document.getElementById("url-input");
 const sendBtn = document.getElementById("send-btn");
@@ -505,6 +514,17 @@ function fillKvTable(tbody, dataObj, countEl) {
 }
 
 setOnLoadRequest(loadRequestSnapshot);
+
+const userNameEl = document.getElementById("user-name");
+if (userNameEl && session) {
+  userNameEl.textContent = session.name || session.email;
+}
+
+const logoutBtn = document.getElementById("logout-btn");
+logoutBtn.addEventListener("click", () => {
+  clearSession();
+  window.location.href = "auth.html";
+});
 
 // ---------------------------------------------------------
 // Save button — saves the current request into a collection

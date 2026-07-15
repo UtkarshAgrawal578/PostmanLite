@@ -76,8 +76,6 @@ newCollectionBtn.addEventListener("click", () => {
   renderCollections();
 });
 
-// Saves a request snapshot into a collection (creates one if none exist yet).
-// requestData shape: { method, url, params, headers, auth, body }
 export function saveRequestToCollection(requestData) {
   const collections = getCollections();
 
@@ -109,9 +107,6 @@ export function saveRequestToCollection(requestData) {
   renderCollections();
 }
 
-// ---------------------------------------------------------
-// History
-// ---------------------------------------------------------
 export function renderHistory() {
   const history = getHistory();
 
@@ -156,8 +151,6 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// ---------------------------------------------------------
-// Init
-// ---------------------------------------------------------
+
 renderCollections();
 renderHistory();

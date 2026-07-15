@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Postman Lite — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #121319;
+  --panel: #191a21;
+  --panel-2: #1f2029;
+  --panel-3: #262832;
+  --border: #2b2d38;
+  --border-soft: #23242e;
+  --text: #e7e8ee;
+  --text-muted: #8a8d9c;
+  --text-faint: #5c5f6e;
+  --accent: #4c8dff;
+  --accent-soft: rgba(76, 141, 255, 0.14);
+  --accent-strong: #2f6fe0;
+  --ok: #3dd68c;
+  --err: #f2545b;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(76,141,255,0.16) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 55%;
+  height: 55%;
+  background: radial-gradient(circle, rgba(61,214,140,0.10) 0%, transparent 70%);
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.auth-shell {
+  width: 900px;
+  max-width: 94vw;
+  min-height: 560px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  position: relative;
+  z-index: 1;
+}
+
+.auth-side {
+  background: linear-gradient(160deg, #182036 0%, #12141c 100%);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-mark {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.brand-name {
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.brand-accent {
+  color: var(--accent);
+}
+
+.side-heading {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-top: 40px;
+}
+
+.side-heading span {
+  color: var(--accent);
+}
+
+.side-sub {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.7;
+  margin-top: 14px;
+  max-width: 320px;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.feature-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.feature-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  flex-shrink: 0;
+}
+
+.side-footer {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+}
+
+.auth-main {
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.toggle-wrap {
+  display: flex;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 9px 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: color 0.2s ease;
+  font-family: inherit;
+}
+
+.toggle-btn.active {
+  color: #0b0d12;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: var(--accent);
+  border-radius: 999px;
+  transition: transform 0.28s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: 1;
+}
+
+.toggle-wrap.signup .toggle-slider {
+  transform: translateX(100%);
+}
+
+.form-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+.form-subtitle {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 28px;
+}
+
+.form-panels {
+  position: relative;
+}
+
+.form-panel {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-panel.active {
+  display: flex;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+}
+
+.field input {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 13px;
+  font-size: 13.5px;
+  color: var(--text);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field input::placeholder {
+  color: var(--text-faint);
+}
+
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field input.invalid {
+  border-color: var(--err);
+}
+
+.field-error {
+  font-size: 11.5px;
+  color: var(--err);
+  min-height: 14px;
+}
+
+.submit-btn {
+  margin-top: 6px;
+  padding: 12px 0;
+  background: var(--accent);
+  color: #0b0d12;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.06s ease;
+  font-family: inherit;
+}
+
+.submit-btn:hover {
+  background: var(--accent-strong);
+}
+
+.submit-btn:active {
+  transform: scale(0.985);
+}
+
+.status-banner {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-banner.show {
+  display: flex;
+}
+
+.status-banner.success {
+  background: rgba(61, 214, 140, 0.1);
+  border: 1px solid rgba(61, 214, 140, 0.3);
+  color: var(--ok);
+}
+
+.status-banner.error {
+  background: rgba(242, 84, 91, 0.1);
+  border: 1px solid rgba(242, 84, 91, 0.3);
+  color: var(--err);
+}
+
+.switch-hint {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+
+.switch-hint button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+}
+
+.switch-hint button:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+  .auth-side {
+    display: none;
+  }
+  .auth-main {
+    padding: 40px 28px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="auth-shell">
+
+  <div class="auth-side">
+    <div>
+      <div class="brand">
+        <span class="brand-mark">&gt;_</span>
+        <span class="brand-name">Postman<span class="brand-accent">Lite</span></span>
+      </div>
+      <h1 class="side-heading">Test APIs<br /><span>without the bloat.</span></h1>
+      <p class="side-sub">A lightweight, browser-based API client. No installs, no clutter — just requests and responses.</p>
+      <div class="feature-list">
+        <div class="feature-row"><span class="feature-dot"></span>All HTTP methods, including QUERY</div>
+        <div class="feature-row"><span class="feature-dot"></span>Collections & environments</div>
+        <div class="feature-row"><span class="feature-dot"></span>Instant, formatted responses</div>
+      </div>
+    </div>
+    <div class="side-footer">v1.0 — built for speed</div>
+  </div>
+
+  <div class="auth-main">
+
+    <div class="toggle-wrap" id="toggle-wrap">
+      <div class="toggle-slider"></div>
+      <button class="toggle-btn active" id="toggle-login" type="button">Log In</button>
+      <button class="toggle-btn" id="toggle-signup" type="button">Sign Up</button>
+    </div>
+
+    <div class="form-panels">
+
+      <div class="form-panel active" id="panel-login">
+        <div class="form-title">Welcome back</div>
+        <div class="form-subtitle">Log in to continue to your workspace.</div>
+
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
+            <div class="field-error" id="login-email-error"></div>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+            <div class="field-error" id="login-password-error"></div>
+          </div>
+          <button type="submit" class="submit-btn">Log In</button>
+        </form>
+
+        <div class="status-banner" id="login-banner"></div>
+      </div>
+
+      <div class="form-panel" id="panel-signup">
+        <div class="form-title">Create your account</div>
+        <div class="form-subtitle">Start testing APIs in under a minute.</div>
+
+        <form id="signup-form" novalidate>
+          <div class="field">
+            <label>Full Name</label>
+            <input type="text" id="signup-name" placeholder="Jane Doe" autocomplete="name" />
+            <div class="field-error" id="signup-name-error"></div>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email" />
+            <div class="field-error" id="signup-email-error"></div>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="signup-password" placeholder="At least 6 characters" autocomplete="new-password" />
+            <div class="field-error" id="signup-password-error"></div>
+          </div>
+          <div class="field">
+            <label>Confirm Password</label>
+            <input type="password" id="signup-confirm" placeholder="Re-enter password" autocomplete="new-password" />
+            <div class="field-error" id="signup-confirm-error"></div>
+          </div>
+          <button type="submit" class="submit-btn">Create Account</button>
+        </form>
+
+        <div class="status-banner" id="signup-banner"></div>
+      </div>
+
+    </div>
+
+    <div class="switch-hint" id="switch-hint">
+      Don't have an account? <button type="button" id="switch-to-signup">Sign up</button>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const toggleWrap = document.getElementById("toggle-wrap");
+const toggleLogin = document.getElementById("toggle-login");
+const toggleSignup = document.getElementById("toggle-signup");
+const panelLogin = document.getElementById("panel-login");
+const panelSignup = document.getElementById("panel-signup");
+const switchHint = document.getElementById("switch-hint");
+const switchToSignup = document.getElementById("switch-to-signup");
+
+function showLogin() {
+  toggleWrap.classList.remove("signup");
+  toggleLogin.classList.add("active");
+  toggleSignup.classList.remove("active");
+  panelLogin.classList.add("active");
+  panelSignup.classList.remove("active");
+  switchHint.innerHTML = 'Don\'t have an account? <button type="button" id="switch-to-signup">Sign up</button>';
+  document.getElementById("switch-to-signup").addEventListener("click", showSignup);
+}
+
+function showSignup() {
+  toggleWrap.classList.add("signup");
+  toggleSignup.classList.add("active");
+  toggleLogin.classList.remove("active");
+  panelSignup.classList.add("active");
+  panelLogin.classList.remove("active");
+  switchHint.innerHTML = 'Already have an account? <button type="button" id="switch-to-login">Log in</button>';
+  document.getElementById("switch-to-login").addEventListener("click", showLogin);
+}
+
+toggleLogin.addEventListener("click", showLogin);
+toggleSignup.addEventListener("click", showSignup);
+switchToSignup.addEventListener("click", showSignup);
+
+const USERS_KEY = "postmanlite:users";
+const SESSION_KEY = "postmanlite:session";
+
+function getUsers() {
+  try {
+    return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveUsers(users) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+function setError(id, message) {
+  const el = document.getElementById(id);
+  el.textContent = message || "";
+}
+
+function setInvalid(inputId, isInvalid) {
+  document.getElementById(inputId).classList.toggle("invalid", isInvalid);
+}
+
+function showBanner(id, type, message) {
+  const el = document.getElementById(id);
+  el.textContent = message;
+  el.className = "status-banner show " + type;
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+const signupForm = document.getElementById("signup-form");
+signupForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const nameInput = document.getElementById("signup-name");
+  const emailInput = document.getElementById("signup-email");
+  const passwordInput = document.getElementById("signup-password");
+  const confirmInput = document.getElementById("signup-confirm");
+
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim().toLowerCase();
+  const password = passwordInput.value;
+  const confirm = confirmInput.value;
+
+  ["signup-name-error", "signup-email-error", "signup-password-error", "signup-confirm-error"].forEach((id) => setError(id, ""));
+  [nameInput, emailInput, passwordInput, confirmInput].forEach((el) => el.classList.remove("invalid"));
+
+  let hasError = false;
+
+  if (!name) {
+    setError("signup-name-error", "Name is required");
+    setInvalid("signup-name", true);
+    hasError = true;
+  }
+
+  if (!email || !isValidEmail(email)) {
+    setError("signup-email-error", "Enter a valid email address");
+    setInvalid("signup-email", true);
+    hasError = true;
+  }
+
+  if (!password || password.length < 6) {
+    setError("signup-password-error", "Password must be at least 6 characters");
+    setInvalid("signup-password", true);
+    hasError = true;
+  }
+
+  if (confirm !== password) {
+    setError("signup-confirm-error", "Passwords do not match");
+    setInvalid("signup-confirm", true);
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  const users = getUsers();
+  if (users.some((u) => u.email === email)) {
+    showBanner("signup-banner", "error", "An account with this email already exists.");
+    return;
+  }
+
+  users.push({ name, email, password });
+  saveUsers(users);
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ name, email }));
+
+  showBanner("signup-banner", "success", "Account created. Redirecting...");
+  signupForm.reset();
+
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 900);
+});
+
+const loginForm = document.getElementById("login-form");
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const emailInput = document.getElementById("login-email");
+  const passwordInput = document.getElementById("login-password");
+
+  const email = emailInput.value.trim().toLowerCase();
+  const password = passwordInput.value;
+
+  ["login-email-error", "login-password-error"].forEach((id) => setError(id, ""));
+  [emailInput, passwordInput].forEach((el) => el.classList.remove("invalid"));
+
+  let hasError = false;
+
+  if (!email || !isValidEmail(email)) {
+    setError("login-email-error", "Enter a valid email address");
+    setInvalid("login-email", true);
+    hasError = true;
+  }
+
+  if (!password) {
+    setError("login-password-error", "Password is required");
+    setInvalid("login-password", true);
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  const users = getUsers();
+  const match = users.find((u) => u.email === email && u.password === password);
+
+  if (!match) {
+    showBanner("login-banner", "error", "Invalid email or password.");
+    return;
+  }
+
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ name: match.name, email: match.email }));
+  showBanner("login-banner", "success", "Login successful. Redirecting...");
+  loginForm.reset();
+
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 700);
+});
+</script>
+
+</body>
+</html>

@@ -342,9 +342,11 @@ textarea:focus {
    Responsive
    ========================================================= */
 @media (max-width: 860px) {
-  #app {
-    grid-template-columns: 1fr;
-  }
+ #app{
+    display:flex;
+    height:100vh;
+    overflow:hidden;
+}
   #sidebar {
     display: none; /* keep the workspace usable on small screens for the demo */
   }
